@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnDestroy, output, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 
@@ -14,10 +14,10 @@ export interface Treat {
 
 @Component({
   selector: 'app-treat-dispenser',
-  standalone: true,
   imports: [CommonModule],
   templateUrl: './treat-dispenser.html',
   styleUrl: './treat-dispenser.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [
     trigger('treatFall', [
       transition(':enter', [
@@ -31,14 +31,14 @@ export interface Treat {
   ]
 })
 export class TreatDispenserComponent implements OnInit, OnDestroy {
-  @Output() treatThrown = new EventEmitter<Treat>();
-  @Output() treatEaten = new EventEmitter<string>();
+  readonly treatThrown = output<Treat>();
+  readonly treatEaten = output<string>();
   
-  treats: Treat[] = [];
+  protected readonly treats = signal<Treat[]>([]);
   private animationFrame?: number;
-  private gravity = 0.5;
-  private bounce = 0.6;
-  private friction = 0.98;
+  private readonly gravity = 0.5;
+  private readonly bounce = 0.6;
+  private readonly friction = 0.98;
 
   ngOnInit(): void {
     this.startPhysicsLoop();
@@ -63,7 +63,7 @@ export class TreatDispenserComponent implements OnInit, OnDestroy {
     });
   }
 
-  throwTreat(targetX: number, targetY: number): void {
+  private throwTreat(targetX: number, targetY: number): void {
     const treat: Treat = {
       id: Math.random().toString(36).substr(2, 9),
       x: targetX - 10, // Center the treat
@@ -74,7 +74,7 @@ export class TreatDispenserComponent implements OnInit, OnDestroy {
       isLanding: false
     };
 
-    this.treats.push(treat);
+    this.treats.update(treats => [...treats, treat]);
     this.treatThrown.emit(treat);
 
     // Remove treat after 10 seconds if not eaten
@@ -83,9 +83,10 @@ export class TreatDispenserComponent implements OnInit, OnDestroy {
     }, 10000);
   }
 
-  startPhysicsLoop(): void {
+  private startPhysicsLoop(): void {
     const updatePhysics = () => {
-      this.treats.forEach(treat => {
+      const currentTreats = this.treats();
+      currentTreats.forEach(treat => {
         if (treat.isEaten) return;
 
         // Apply gravity
@@ -123,12 +124,13 @@ export class TreatDispenserComponent implements OnInit, OnDestroy {
     updatePhysics();
   }
 
-  removeTreat(treatId: string): void {
-    this.treats = this.treats.filter(treat => treat.id !== treatId);
+  private removeTreat(treatId: string): void {
+    this.treats.update(treats => treats.filter(treat => treat.id !== treatId));
   }
 
   eatTreat(treatId: string): void {
-    const treat = this.treats.find(t => t.id === treatId);
+    const currentTreats = this.treats();
+    const treat = currentTreats.find(t => t.id === treatId);
     if (treat && !treat.isEaten) {
       treat.isEaten = true;
       this.treatEaten.emit(treatId);
@@ -142,7 +144,8 @@ export class TreatDispenserComponent implements OnInit, OnDestroy {
 
   // Method for kitten to check nearby treats
   getNearbyTreat(kittenX: number, kittenY: number, radius: number = 50): Treat | null {
-    return this.treats.find(treat => {
+    const currentTreats = this.treats();
+    return currentTreats.find(treat => {
       if (treat.isEaten) return false;
       
       const distance = Math.sqrt(

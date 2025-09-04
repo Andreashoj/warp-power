@@ -1,49 +1,63 @@
 <div class="inventory-container">
   <h2>🎒 User Inventory</h2>
   
-  <div *ngIf="loading" class="loading">
-    Loading inventory data...
-  </div>
-  
-  <div *ngIf="error" class="error">
-    {{ error }}
-  </div>
-  
-  <div *ngIf="!loading && !error" class="inventory-content">
-    <!-- User Selection -->
-    <div class="user-selector">
-      <label for="userSelect">Select User:</label>
-      <select id="userSelect" (change)="onUserChange($event)" [value]="selectedUserId">
-        <option *ngFor="let user of users" [value]="user.id">
-          {{ user.name }} (💰 {{ user.credit }} credits)
-        </option>
-      </select>
+  @if (loading()) {
+    <div class="loading">
+      Loading inventory data...
     </div>
-
-    <!-- Selected User Info -->
-    <div *ngIf="getSelectedUser()" class="user-info">
-      <h3>{{ getSelectedUser()?.name }}'s Inventory</h3>
-      <p class="credits">💰 Credits: {{ getSelectedUser()?.credit }}</p>
-      <p class="total-value">📊 Total Inventory Value: {{ getTotalValue() }} credits</p>
+  }
+  
+  @if (error()) {
+    <div class="error">
+      {{ error() }}
     </div>
-
-    <!-- Inventory Grid -->
-    <div class="inventory-grid" *ngIf="getUserInventory().length > 0">
-      <div *ngFor="let inventoryItem of getUserInventory()" class="inventory-item">
-        <div class="item-image">{{ getItemForInventory(inventoryItem)?.image }}</div>
-        <div class="item-details">
-          <h4>{{ getItemForInventory(inventoryItem)?.name }}</h4>
-          <p class="quantity">Quantity: {{ inventoryItem.quantity }}</p>
-          <p class="value">Value: {{ getItemForInventory(inventoryItem)?.value }} credits each</p>
-          <p class="total-item-value">
-            Total: {{ (getItemForInventory(inventoryItem)?.value || 0) * inventoryItem.quantity }} credits
-          </p>
-        </div>
+  }
+  
+  @if (!loading() && !error()) {
+    <div class="inventory-content">
+      <!-- User Selection -->
+      <div class="user-selector">
+        <label for="userSelect">Select User:</label>
+        <select id="userSelect" (change)="onUserChange($event)" [value]="selectedUserId()">
+          @for (user of users(); track user.id) {
+            <option [value]="user.id">
+              {{ user.name }} (💰 {{ user.credit }} credits)
+            </option>
+          }
+        </select>
       </div>
-    </div>
 
-    <div *ngIf="getUserInventory().length === 0" class="no-items">
-      {{ getSelectedUser()?.name }} has no items in their inventory.
+      <!-- Selected User Info -->
+      @if (selectedUser()) {
+        <div class="user-info">
+          <h3>{{ selectedUser()?.name }}'s Inventory</h3>
+          <p class="credits">💰 Credits: {{ selectedUser()?.credit }}</p>
+          <p class="total-value">📄 Total Inventory Value: {{ totalValue() }} credits</p>
+        </div>
+      }
+
+      <!-- Inventory Grid -->
+      @if (userInventory().length > 0) {
+        <div class="inventory-grid">
+          @for (inventoryItem of userInventory(); track inventoryItem.itemId) {
+            <div class="inventory-item">
+              <div class="item-image">{{ getItemForInventory(inventoryItem)?.image }}</div>
+              <div class="item-details">
+                <h4>{{ getItemForInventory(inventoryItem)?.name }}</h4>
+                <p class="quantity">Quantity: {{ inventoryItem.quantity }}</p>
+                <p class="value">Value: {{ getItemForInventory(inventoryItem)?.value }} credits each</p>
+                <p class="total-item-value">
+                  Total: {{ (getItemForInventory(inventoryItem)?.value || 0) * inventoryItem.quantity }} credits
+                </p>
+              </div>
+            </div>
+          }
+        </div>
+      } @else {
+        <div class="no-items">
+          {{ selectedUser()?.name }} has no items in their inventory.
+        </div>
+      }
     </div>
-  </div>
+  }
 </div>

@@ -1,24 +1,32 @@
 <div class="power-list-container">
   <h2>🚀 Warp Powers</h2>
   
-  <div *ngIf="loading" class="loading">
-    Loading powers...
-  </div>
-  
-  <div *ngIf="error" class="error">
-    {{ error }}
-  </div>
-  
-  <div *ngIf="!loading && !error" class="powers-grid">
-    <div *ngFor="let power of powers" class="power-card">
-      <h3>{{ power.name }}</h3>
-      <p>{{ power.description }}</p>
-      <div class="power-level">
-        <strong>Power Level: {{ power.powerLevel }}/100</strong>
-        <div class="power-bar">
-          <div class="power-fill" [style.width.%]="power.powerLevel"></div>
-        </div>
-      </div>
+  @if (loading()) {
+    <div class="loading">
+      Loading powers...
     </div>
-  </div>
+  }
+  
+  @if (error()) {
+    <div class="error">
+      {{ error() }}
+    </div>
+  }
+  
+  @if (!loading() && !error()) {
+    <div class="powers-grid">
+      @for (power of powers(); track power.id) {
+        <div class="power-card">
+          <h3>{{ power.name }}</h3>
+          <p>{{ power.description }}</p>
+          <div class="power-level">
+            <strong>Power Level: {{ power.powerLevel }}/100</strong>
+            <div class="power-bar">
+              <div class="power-fill" [style.width.%]="power.powerLevel"></div>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  }
 </div>

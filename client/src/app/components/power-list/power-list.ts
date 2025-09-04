@@ -1,35 +1,37 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PowersService, WarpPower } from '../../services/powers';
 
 @Component({
   selector: 'app-power-list',
-  standalone: true,
   imports: [CommonModule],
   templateUrl: './power-list.html',
-  styleUrl: './power-list.css'
+  styleUrl: './power-list.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PowerListComponent implements OnInit {
-  powers: WarpPower[] = [];
-  loading = true;
-  error: string | null = null;
-
-  constructor(private powersService: PowersService) {}
+  private readonly powersService = inject(PowersService);
+  
+  protected readonly powers = signal<WarpPower[]>([]);
+  protected readonly loading = signal(true);
+  protected readonly error = signal<string | null>(null);
 
   ngOnInit(): void {
     this.loadPowers();
   }
 
-  loadPowers(): void {
-    this.loading = true;
+  private loadPowers(): void {
+    this.loading.set(true);
+    this.error.set(null);
+    
     this.powersService.getPowers().subscribe({
       next: (powers) => {
-        this.powers = powers;
-        this.loading = false;
+        this.powers.set(powers);
+        this.loading.set(false);
       },
       error: (err) => {
-        this.error = 'Failed to load powers. Make sure the API is running!';
-        this.loading = false;
+        this.error.set('Failed to load powers. Make sure the API is running!');
+        this.loading.set(false);
         console.error('Error loading powers:', err);
       }
     });

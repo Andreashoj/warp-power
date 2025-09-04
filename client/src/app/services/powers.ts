@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
@@ -20,9 +20,8 @@ export interface CreateWarpPowerDto {
   providedIn: 'root'
 })
 export class PowersService {
+  private readonly http = inject(HttpClient);
   private readonly apiUrl = `${environment.apiUrl}/powers`;
-
-  constructor(private http: HttpClient) { }
 
   getPowers(): Observable<WarpPower[]> {
     return this.http.get<WarpPower[]>(this.apiUrl);

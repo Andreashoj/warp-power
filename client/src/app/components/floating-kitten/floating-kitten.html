@@ -1,15 +1,15 @@
 <div class="kitten-container" 
-     [style.left.%]="kittenX" 
-     [style.top.%]="kittenY"
+     [style.left.%]="kittenX()" 
+     [style.top.%]="kittenY()"
      (click)="onKittenClick()">
   
   <!-- Speech Bubble -->
-  <div class="speech-bubble" 
-       *ngIf="showSpeechBubble"
-       [@speechAnimation]>
-    <span class="meow-text">{{ speechText }}</span>
-    <div class="bubble-tail"></div>
-  </div>
+  @if (showSpeechBubble()) {
+    <div class="speech-bubble" [@speechAnimation]>
+      <span class="meow-text">{{ speechText() }}</span>
+      <div class="bubble-tail"></div>
+    </div>
+  }
   
   <!-- Adorable Kitten -->
   <div class="kitten" [@bounceAnimation]>

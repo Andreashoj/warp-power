@@ -1,4 +1,4 @@
-import { Component, signal, ViewChild } from '@angular/core';
+import { Component, signal, ChangeDetectionStrategy } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { PowerListComponent } from './components/power-list/power-list';
 import { FloatingKittenComponent } from './components/floating-kitten/floating-kitten';
@@ -9,20 +9,18 @@ import { UserInventoryComponent } from './components/user-inventory/user-invento
   selector: 'app-root',
   imports: [RouterOutlet, PowerListComponent, FloatingKittenComponent, TreatDispenserComponent, UserInventoryComponent],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrl: './app.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class App {
-  @ViewChild(TreatDispenserComponent) treatDispenser!: TreatDispenserComponent;
-  @ViewChild(FloatingKittenComponent) kitten!: FloatingKittenComponent;
-  
   protected readonly title = signal('Warp Power');
-  treats: Treat[] = [];
+  protected readonly treats = signal<Treat[]>([]);
 
-  onTreatThrown(treat: Treat): void {
-    this.treats.push(treat);
+  protected onTreatThrown(treat: Treat): void {
+    this.treats.update(treats => [...treats, treat]);
   }
 
-  onTreatEaten(treatId: string): void {
-    this.treats = this.treats.filter(t => t.id !== treatId);
+  protected onTreatEaten(treatId: string): void {
+    this.treats.update(treats => treats.filter(t => t.id !== treatId));
   }
 }
