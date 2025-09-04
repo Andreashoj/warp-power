@@ -1,6 +1,7 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { trigger, state, style, transition, animate } from '@angular/animations';
+import { Treat } from '../treat-dispenser/treat-dispenser';
 
 @Component({
   selector: 'app-floating-kitten',
@@ -27,15 +28,23 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
   ]
 })
 export class FloatingKittenComponent implements OnInit, OnDestroy {
+  @Input() treats: Treat[] = [];
+  
   showSpeechBubble = false;
+  speechText = 'Meow! 🐾';
   kittenX = 50; // Starting position X (percentage)
   kittenY = 50; // Starting position Y (percentage)
+  isChasing = false;
+  isEating = false;
+  targetTreat: Treat | null = null;
   
   private moveInterval?: number;
   private speechTimeout?: number;
+  private chaseInterval?: number;
 
   ngOnInit(): void {
     this.startFloating();
+    this.startTreatDetection();
   }
 
   ngOnDestroy(): void {
@@ -44,6 +53,9 @@ export class FloatingKittenComponent implements OnInit, OnDestroy {
     }
     if (this.speechTimeout) {
       clearTimeout(this.speechTimeout);
+    }
+    if (this.chaseInterval) {
+      clearInterval(this.chaseInterval);
     }
   }
 
@@ -77,5 +89,133 @@ export class FloatingKittenComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       this.kittenY = Math.min(85, this.kittenY + 5);
     }, 200);
+  }
+
+  startTreatDetection(): void {
+    this.chaseInterval = window.setInterval(() => {
+      if (!this.isChasing && !this.isEating) {
+        this.lookForTreats();
+      } else if (this.isChasing && this.targetTreat) {
+        this.chaseTreat();
+      }
+    }, 50); // Check every 50ms for smooth movement
+  }
+
+  lookForTreats(): void {
+    const availableTreats = this.treats.filter(treat => !treat.isEaten && this.isTreatSettled(treat));
+    
+    if (availableTreats.length === 0) return;
+
+    // Find the closest treat
+    const kittenPixelX = (this.kittenX / 100) * window.innerWidth;
+    const kittenPixelY = (this.kittenY / 100) * window.innerHeight;
+
+    let closestTreat: Treat | null = null;
+    let closestDistance = Infinity;
+
+    availableTreats.forEach(treat => {
+      const distance = Math.sqrt(
+        Math.pow(treat.x - kittenPixelX, 2) + 
+        Math.pow(treat.y - kittenPixelY, 2)
+      );
+      
+      if (distance < closestDistance && distance < 300) { // Only chase nearby treats
+        closestDistance = distance;
+        closestTreat = treat;
+      }
+    });
+
+    if (closestTreat) {
+      this.startChasing(closestTreat);
+    }
+  }
+
+  isTreatSettled(treat: Treat): boolean {
+    // Only chase treats that have landed or are moving slowly
+    return treat.isLanding || Math.abs(treat.velocityY) < 2;
+  }
+
+  startChasing(treat: Treat): void {
+    this.isChasing = true;
+    this.targetTreat = treat;
+    
+    // Stop normal floating while chasing
+    if (this.moveInterval) {
+      clearInterval(this.moveInterval);
+      this.moveInterval = undefined;
+    }
+
+    // Show excited speech bubble
+    this.speechText = 'Treat! 🍪';
+    this.showSpeechBubble = true;
+    setTimeout(() => {
+      this.showSpeechBubble = false;
+    }, 1000);
+  }
+
+  chaseTreat(): void {
+    if (!this.targetTreat || this.targetTreat.isEaten) {
+      this.stopChasing();
+      return;
+    }
+
+    const kittenPixelX = (this.kittenX / 100) * window.innerWidth;
+    const kittenPixelY = (this.kittenY / 100) * window.innerHeight;
+
+    const deltaX = this.targetTreat.x - kittenPixelX;
+    const deltaY = this.targetTreat.y - kittenPixelY;
+    const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+
+    // If close enough, eat the treat!
+    if (distance < 30) {
+      this.eatTreat();
+      return;
+    }
+
+    // Move towards the treat
+    const speed = 2; // pixels per frame
+    const moveX = (deltaX / distance) * speed;
+    const moveY = (deltaY / distance) * speed;
+
+    const newPixelX = kittenPixelX + moveX;
+    const newPixelY = kittenPixelY + moveY;
+
+    // Convert back to percentages
+    this.kittenX = (newPixelX / window.innerWidth) * 100;
+    this.kittenY = (newPixelY / window.innerHeight) * 100;
+
+    // Keep kitten within bounds
+    this.kittenX = Math.max(5, Math.min(95, this.kittenX));
+    this.kittenY = Math.max(5, Math.min(95, this.kittenY));
+  }
+
+  eatTreat(): void {
+    if (!this.targetTreat) return;
+
+    this.isEating = true;
+    this.targetTreat.isEaten = true;
+
+    // Happy eating speech bubbles
+    const eatingSounds = ['Nom nom! 😋', 'Yummy! 😸', 'Purr... 😻'];
+    this.speechText = eatingSounds[Math.floor(Math.random() * eatingSounds.length)];
+    this.showSpeechBubble = true;
+
+    // Eating animation duration
+    setTimeout(() => {
+      this.showSpeechBubble = false;
+      this.isEating = false;
+      this.stopChasing();
+    }, 2000);
+  }
+
+  stopChasing(): void {
+    this.isChasing = false;
+    this.targetTreat = null;
+    this.speechText = 'Meow! 🐾';
+    
+    // Resume normal floating behavior
+    if (!this.moveInterval) {
+      this.startFloating();
+    }
   }
 }

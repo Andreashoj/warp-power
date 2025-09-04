@@ -2,14 +2,21 @@
   <header>
     <h1>{{ title() }} 🚀</h1>
     <p>Full-stack Angular + .NET Web API with dual deployment to Netlify and Azure!</p>
+    <p class="treat-info">🍪 Click anywhere to throw treats for the kitten! 🐱</p>
   </header>
   
   <main>
     <app-power-list></app-power-list>
   </main>
   
-  <!-- Adorable Floating Kitten -->
-  <app-floating-kitten></app-floating-kitten>
+  <!-- Treat Dispenser System -->
+  <app-treat-dispenser
+    (treatThrown)="onTreatThrown($event)"
+    (treatEaten)="onTreatEaten($event)">
+  </app-treat-dispenser>
+  
+  <!-- Adorable Floating Kitten with Treat AI -->
+  <app-floating-kitten [treats]="treats"></app-floating-kitten>
   
   <router-outlet />
 </div>

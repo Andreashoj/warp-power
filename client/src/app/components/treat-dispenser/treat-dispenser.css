@@ -1,0 +1,201 @@
+.treat-dispenser-area {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 999;
+  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><circle cx="16" cy="16" r="14" fill="%23ff9800" stroke="%23ff5722" stroke-width="2"/><text x="16" y="20" font-size="16" text-anchor="middle" fill="white">🍪</text></svg>') 16 16, pointer;
+}
+
+.treats-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* Individual Treat Styling */
+.treat {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  pointer-events: none;
+  z-index: 1000;
+}
+
+.treat-body {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #8B4513, #D2691E);
+  border-radius: 60% 40% 55% 45%;
+  border: 2px solid #654321;
+  box-shadow: 
+    0 2px 4px rgba(0,0,0,0.3),
+    inset 1px 1px 2px rgba(255,255,255,0.3),
+    inset -1px -1px 2px rgba(0,0,0,0.2);
+  animation: treatBounce 0.5s ease-out;
+}
+
+/* Treat Chunks for Texture */
+.treat-chunk {
+  position: absolute;
+  background: #A0522D;
+  border-radius: 50%;
+  box-shadow: inset 0 1px 1px rgba(0,0,0,0.2);
+}
+
+.treat-chunk-1 {
+  width: 4px;
+  height: 4px;
+  top: 3px;
+  left: 6px;
+}
+
+.treat-chunk-2 {
+  width: 3px;
+  height: 3px;
+  top: 8px;
+  right: 4px;
+}
+
+.treat-chunk-3 {
+  width: 5px;
+  height: 3px;
+  bottom: 4px;
+  left: 3px;
+  border-radius: 40%;
+}
+
+/* Sparkle Effect */
+.treat-sparkle {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  font-size: 8px;
+  opacity: 0;
+  animation: sparkleFloat 2s infinite;
+}
+
+/* Treat Shadow */
+.treat-shadow {
+  position: absolute;
+  bottom: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 15px;
+  height: 8px;
+  background: rgba(0,0,0,0.2);
+  border-radius: 50%;
+  filter: blur(2px);
+  transition: opacity 0.3s ease;
+}
+
+/* Eaten State */
+.treat.eaten {
+  animation: eatAnimation 0.5s ease-in-out;
+}
+
+.treat.eaten .treat-body {
+  transform: scale(0);
+  opacity: 0;
+}
+
+.treat.eaten .treat-sparkle {
+  animation: eatSparkle 0.5s ease-out;
+  opacity: 1;
+  font-size: 12px;
+}
+
+/* Instructions */
+.instructions {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1001;
+  pointer-events: none;
+  animation: instructionsPulse 3s infinite;
+}
+
+.instruction-bubble {
+  background: linear-gradient(135deg, #FFB6C1, #FFC0CB);
+  color: #8B008B;
+  padding: 12px 20px;
+  border-radius: 25px;
+  font-weight: bold;
+  font-size: 14px;
+  box-shadow: 
+    0 4px 12px rgba(255, 182, 193, 0.4),
+    inset 0 1px 3px rgba(255,255,255,0.5);
+  border: 2px solid #FF69B4;
+  text-shadow: 0 1px 2px rgba(255,255,255,0.5);
+}
+
+/* Animations */
+@keyframes treatBounce {
+  0% { transform: scale(0.8) rotate(-10deg); }
+  50% { transform: scale(1.1) rotate(5deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+
+@keyframes sparkleFloat {
+  0%, 100% { 
+    opacity: 0; 
+    transform: translateY(0px) rotate(0deg); 
+  }
+  50% { 
+    opacity: 1; 
+    transform: translateY(-10px) rotate(180deg); 
+  }
+}
+
+@keyframes eatAnimation {
+  0% { transform: scale(1) rotate(0deg); }
+  25% { transform: scale(1.2) rotate(90deg); }
+  50% { transform: scale(0.8) rotate(180deg); }
+  75% { transform: scale(0.4) rotate(270deg); }
+  100% { transform: scale(0) rotate(360deg); }
+}
+
+@keyframes eatSparkle {
+  0% { 
+    opacity: 0; 
+    transform: scale(1) translateY(0px); 
+  }
+  50% { 
+    opacity: 1; 
+    transform: scale(1.5) translateY(-15px); 
+  }
+  100% { 
+    opacity: 0; 
+    transform: scale(2) translateY(-25px); 
+  }
+}
+
+@keyframes instructionsPulse {
+  0%, 100% { 
+    opacity: 0.7; 
+    transform: translateX(-50%) scale(1); 
+  }
+  50% { 
+    opacity: 1; 
+    transform: translateX(-50%) scale(1.05); 
+  }
+}
+
+/* Custom Cursor Styles */
+body {
+  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><circle cx="16" cy="16" r="12" fill="%23ff9800" stroke="%23ff5722" stroke-width="2"/><text x="16" y="20" font-size="14" text-anchor="middle">🍪</text></svg>') 16 16, auto !important;
+}
+
+/* Hover effects for treat interaction */
+.treat:hover {
+  animation: treatHover 0.3s ease-in-out infinite alternate;
+}
+
+@keyframes treatHover {
+  from { transform: translateY(0px); }
+  to { transform: translateY(-2px); }
+}
