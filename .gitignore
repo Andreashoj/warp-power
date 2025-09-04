@@ -47,3 +47,4 @@ logs
 
 # Local Netlify folder
 .netlify
+server/publish/
