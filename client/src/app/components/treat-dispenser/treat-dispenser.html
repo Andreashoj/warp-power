@@ -1,0 +1,32 @@
+<!-- Custom Cursor Area -->
+<div class="treat-dispenser-area">
+  
+  <!-- Flying Treats -->
+  <div class="treats-container">
+    <div *ngFor="let treat of treats; trackBy: treatTrackBy"
+         class="treat"
+         [class.eaten]="treat.isEaten"
+         [style.left.px]="treat.x"
+         [style.top.px]="treat.y"
+         [@treatFall]>
+      
+      <!-- Treat Shape -->
+      <div class="treat-body">
+        <div class="treat-chunk treat-chunk-1"></div>
+        <div class="treat-chunk treat-chunk-2"></div>
+        <div class="treat-chunk treat-chunk-3"></div>
+        <div class="treat-sparkle">✨</div>
+      </div>
+      
+      <!-- Treat Shadow -->
+      <div class="treat-shadow" [style.opacity]="treat.isLanding ? 0.3 : 0.1"></div>
+    </div>
+  </div>
+  
+  <!-- Cursor Instructions -->
+  <div class="instructions" *ngIf="treats.length === 0">
+    <div class="instruction-bubble">
+      🍪 Click anywhere to throw treats for the kitten! 🐱
+    </div>
+  </div>
+</div>
