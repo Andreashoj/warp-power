@@ -73,16 +73,8 @@ export class FloatingKittenComponent implements OnInit, OnDestroy {
   }
 
   onKittenClick(): void {
-    this.showSpeechBubble = true;
-    
-    // Hide speech bubble after 2 seconds
-    if (this.speechTimeout) {
-      clearTimeout(this.speechTimeout);
-    }
-    
-    this.speechTimeout = window.setTimeout(() => {
-      this.showSpeechBubble = false;
-    }, 2000);
+    // Show meow with centralized method
+    this.showSpeech('Meow! 🐾', 2000);
 
     // Give kitten a little bounce when clicked
     this.kittenY = Math.max(5, this.kittenY - 5);
@@ -146,11 +138,7 @@ export class FloatingKittenComponent implements OnInit, OnDestroy {
     }
 
     // Show excited speech bubble
-    this.speechText = 'Treat! 🍪';
-    this.showSpeechBubble = true;
-    setTimeout(() => {
-      this.showSpeechBubble = false;
-    }, 1000);
+    this.showSpeech('Treat! 🍪', 1500);
   }
 
   chaseTreat(): void {
@@ -195,17 +183,16 @@ export class FloatingKittenComponent implements OnInit, OnDestroy {
     this.isEating = true;
     this.targetTreat.isEaten = true;
 
-    // Happy eating speech bubbles
-    const eatingSounds = ['Nom nom! 😋', 'Yummy! 😸', 'Purr... 😻'];
-    this.speechText = eatingSounds[Math.floor(Math.random() * eatingSounds.length)];
-    this.showSpeechBubble = true;
+    // Happy eating speech bubbles with longer duration
+    const eatingSounds = ['Nom nom! 😋', 'Yummy! 😸', 'Purr... 😻', 'Crunch! 😍', 'So good! 🥰'];
+    const randomSound = eatingSounds[Math.floor(Math.random() * eatingSounds.length)];
+    this.showSpeech(randomSound, 3000); // Show for 3 seconds
 
-    // Eating animation duration
+    // Eating animation duration - longer to show the speech
     setTimeout(() => {
-      this.showSpeechBubble = false;
       this.isEating = false;
       this.stopChasing();
-    }, 2000);
+    }, 3500); // Slightly longer than speech to ensure smooth transition
   }
 
   stopChasing(): void {
@@ -217,5 +204,21 @@ export class FloatingKittenComponent implements OnInit, OnDestroy {
     if (!this.moveInterval) {
       this.startFloating();
     }
+  }
+
+  // Centralized speech bubble method to avoid conflicts
+  showSpeech(text: string, duration: number): void {
+    // Clear any existing speech timeout
+    if (this.speechTimeout) {
+      clearTimeout(this.speechTimeout);
+    }
+    
+    this.speechText = text;
+    this.showSpeechBubble = true;
+    
+    // Hide speech bubble after specified duration
+    this.speechTimeout = window.setTimeout(() => {
+      this.showSpeechBubble = false;
+    }, duration);
   }
 }
