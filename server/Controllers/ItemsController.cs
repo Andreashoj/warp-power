@@ -18,9 +18,18 @@ namespace WarpPowerApi.Controllers
 
         // GET: api/Items
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Item>>> GetItems()
+        public async Task<ActionResult<IEnumerable<object>>> GetItems()
         {
-            return await _context.Items.ToListAsync();
+            var items = await _context.Items.ToListAsync();
+            var result = items.Select(i => new
+            {
+                id = i.Id,
+                name = i.Name,
+                image = i.Image,
+                value = i.Value
+            }).ToList();
+            
+            return Ok(result);
         }
 
         // GET: api/Items/5

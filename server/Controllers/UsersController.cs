@@ -18,12 +18,35 @@ namespace WarpPowerApi.Controllers
 
         // GET: api/Users
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetUsers()
+        public async Task<ActionResult<IEnumerable<object>>> GetUsers()
         {
-            return await _context.Users
+            var users = await _context.Users
                 .Include(u => u.Inventories)
                     .ThenInclude(i => i.Item)
                 .ToListAsync();
+
+            var result = users.Select(u => new
+            {
+                id = u.Id,
+                name = u.Name,
+                credit = u.Credit,
+                inventories = u.Inventories.Select(inv => new
+                {
+                    id = inv.Id,
+                    userId = inv.UserId,
+                    itemId = inv.ItemId,
+                    quantity = inv.Quantity,
+                    item = new
+                    {
+                        id = inv.Item.Id,
+                        name = inv.Item.Name,
+                        image = inv.Item.Image,
+                        value = inv.Item.Value
+                    }
+                }).ToList()
+            }).ToList();
+
+            return Ok(result);
         }
 
         // GET: api/Users/5
