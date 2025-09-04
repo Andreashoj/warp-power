@@ -1,0 +1,288 @@
+.kitten-container {
+  position: fixed;
+  z-index: 1000;
+  cursor: pointer;
+  transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  pointer-events: auto;
+}
+
+/* Speech Bubble */
+.speech-bubble {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #ffe4e1;
+  color: #ff69b4;
+  padding: 8px 12px;
+  border-radius: 15px;
+  font-size: 14px;
+  font-weight: bold;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(255, 105, 180, 0.3);
+  margin-bottom: 5px;
+  border: 2px solid #ffb6c1;
+}
+
+.meow-text {
+  display: inline-block;
+  animation: meowPulse 0.6s ease-in-out;
+}
+
+.bubble-tail {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 8px solid #ffe4e1;
+}
+
+.bubble-tail::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 10px solid #ffb6c1;
+}
+
+/* Kitten Styles */
+.kitten {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  animation: float 4s ease-in-out infinite;
+}
+
+.kitten:hover {
+  animation: float 2s ease-in-out infinite, wiggle 0.3s ease-in-out;
+}
+
+.kitten-body {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* Head */
+.head {
+  width: 30px;
+  height: 25px;
+  background: linear-gradient(145deg, #ffa500, #ff8c00);
+  border-radius: 50% 50% 45% 45%;
+  position: absolute;
+  top: 8px;
+  left: 5px;
+  box-shadow: 
+    0 2px 4px rgba(0,0,0,0.1),
+    inset -2px -2px 3px rgba(0,0,0,0.1),
+    inset 2px 2px 3px rgba(255,255,255,0.3);
+}
+
+/* Ears */
+.ear {
+  width: 8px;
+  height: 8px;
+  background: linear-gradient(145deg, #ffa500, #ff8c00);
+  position: absolute;
+  top: 5px;
+  border-radius: 50% 50% 0 0;
+  transform: rotate(-20deg);
+}
+
+.left-ear {
+  left: 8px;
+  transform: rotate(-30deg);
+}
+
+.right-ear {
+  right: 8px;
+  transform: rotate(30deg);
+}
+
+.ear-inner {
+  width: 4px;
+  height: 4px;
+  background: #ffb6c1;
+  position: absolute;
+  top: 7px;
+  border-radius: 50%;
+}
+
+.left-ear-inner {
+  left: 10px;
+}
+
+.right-ear-inner {
+  right: 10px;
+}
+
+/* Eyes */
+.eye {
+  width: 6px;
+  height: 6px;
+  background: #fff;
+  border-radius: 50%;
+  position: absolute;
+  top: 12px;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.left-eye {
+  left: 9px;
+}
+
+.right-eye {
+  right: 9px;
+}
+
+.pupil {
+  width: 3px;
+  height: 3px;
+  background: #333;
+  border-radius: 50%;
+  position: absolute;
+  top: 1.5px;
+  left: 1.5px;
+  animation: blink 3s infinite;
+}
+
+.sparkle {
+  width: 1px;
+  height: 1px;
+  background: #fff;
+  border-radius: 50%;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  animation: sparkle 2s infinite;
+}
+
+/* Nose */
+.nose {
+  width: 3px;
+  height: 2px;
+  background: #ff69b4;
+  border-radius: 50%;
+  position: absolute;
+  top: 17px;
+  left: 13.5px;
+}
+
+/* Mouth */
+.mouth {
+  width: 6px;
+  height: 3px;
+  border: 1px solid #ff69b4;
+  border-top: none;
+  border-radius: 0 0 50% 50%;
+  position: absolute;
+  top: 19px;
+  left: 11.5px;
+}
+
+/* Whiskers */
+.whisker {
+  width: 8px;
+  height: 1px;
+  background: #666;
+  position: absolute;
+  top: 18px;
+  border-radius: 1px;
+}
+
+.whisker-1 {
+  left: 2px;
+  transform: rotate(-10deg);
+}
+
+.whisker-2 {
+  left: 3px;
+  top: 20px;
+  transform: rotate(10deg);
+}
+
+.whisker-3 {
+  right: 2px;
+  transform: rotate(10deg);
+}
+
+.whisker-4 {
+  right: 3px;
+  top: 20px;
+  transform: rotate(-10deg);
+}
+
+/* Paws */
+.paw {
+  width: 4px;
+  height: 4px;
+  background: #ff8c00;
+  border-radius: 50%;
+  position: absolute;
+  animation: pawWave 2s ease-in-out infinite;
+}
+
+.front-paw {
+  top: 30px;
+  left: 8px;
+  animation-delay: 0s;
+}
+
+.back-paw {
+  top: 32px;
+  right: 8px;
+  animation-delay: 0.5s;
+}
+
+/* Animations */
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  25% { transform: translateY(-3px) rotate(1deg); }
+  50% { transform: translateY(-5px) rotate(0deg); }
+  75% { transform: translateY(-3px) rotate(-1deg); }
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(2deg); }
+  75% { transform: rotate(-2deg); }
+}
+
+@keyframes blink {
+  0%, 90%, 100% { opacity: 1; }
+  95% { opacity: 0; }
+}
+
+@keyframes sparkle {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+
+@keyframes pawWave {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-2px) rotate(10deg); }
+}
+
+@keyframes meowPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+/* Hover effects */
+.kitten-container:hover .head {
+  animation: headTilt 0.5s ease-in-out;
+}
+
+@keyframes headTilt {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(5deg); }
+}

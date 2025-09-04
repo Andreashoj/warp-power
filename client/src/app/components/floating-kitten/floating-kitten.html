@@ -1,0 +1,53 @@
+<div class="kitten-container" 
+     [style.left.%]="kittenX" 
+     [style.top.%]="kittenY"
+     (click)="onKittenClick()">
+  
+  <!-- Speech Bubble -->
+  <div class="speech-bubble" 
+       *ngIf="showSpeechBubble"
+       [@speechAnimation]>
+    <span class="meow-text">Meow! 🐾</span>
+    <div class="bubble-tail"></div>
+  </div>
+  
+  <!-- Adorable Kitten -->
+  <div class="kitten" [@bounceAnimation]>
+    <div class="kitten-body">
+      <!-- Ears -->
+      <div class="ear left-ear"></div>
+      <div class="ear right-ear"></div>
+      <div class="ear-inner left-ear-inner"></div>
+      <div class="ear-inner right-ear-inner"></div>
+      
+      <!-- Head -->
+      <div class="head">
+        <!-- Eyes -->
+        <div class="eye left-eye">
+          <div class="pupil"></div>
+          <div class="sparkle"></div>
+        </div>
+        <div class="eye right-eye">
+          <div class="pupil"></div>
+          <div class="sparkle"></div>
+        </div>
+        
+        <!-- Nose -->
+        <div class="nose"></div>
+        
+        <!-- Mouth -->
+        <div class="mouth"></div>
+        
+        <!-- Whiskers -->
+        <div class="whisker whisker-1"></div>
+        <div class="whisker whisker-2"></div>
+        <div class="whisker whisker-3"></div>
+        <div class="whisker whisker-4"></div>
+      </div>
+    </div>
+    
+    <!-- Paws (visible when floating) -->
+    <div class="paw front-paw"></div>
+    <div class="paw back-paw"></div>
+  </div>
+</div>
