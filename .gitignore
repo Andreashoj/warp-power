@@ -44,3 +44,6 @@ logs
 
 # Angular specific
 .angular/
+
+# Local Netlify folder
+.netlify

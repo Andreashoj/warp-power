@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export interface WarpPower {
   id: number;
@@ -19,7 +20,7 @@ export interface CreateWarpPowerDto {
   providedIn: 'root'
 })
 export class PowersService {
-  private readonly apiUrl = 'https://localhost:7136/api/powers'; // Will be updated for production
+  private readonly apiUrl = `${environment.apiUrl}/powers`;
 
   constructor(private http: HttpClient) { }
 
