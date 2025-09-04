@@ -7,7 +7,7 @@
   
   <main>
     <div class="content-grid">
-      <app-power-list></app-power-list>
+      <app-powers-container></app-powers-container>
       <app-user-inventory></app-user-inventory>
     </div>
   </main>
@@ -19,7 +19,10 @@
   </app-treat-dispenser>
   
   <!-- Adorable Floating Kitten with Treat AI -->
-  <app-floating-kitten [treats]="treats()"></app-floating-kitten>
+  <app-floating-kitten [treats]="appState.treatsState().items"></app-floating-kitten>
+  
+  <!-- Global Notifications -->
+  <app-notification></app-notification>
   
   <router-outlet />
 </div>
